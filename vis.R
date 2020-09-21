@@ -92,7 +92,7 @@ vis %>%
   geom_col() + 
   scale_fill_brewer(palette="Set1", direction=1) +
   ggtitle("Covid Deaths in 9 states by Age group, sex and state") +
-  guides(fill=guide_legend("State"), alpha=guide_legend("Age Group")) +
+  guides(fill=guide_legend("Sex"), alpha=guide_legend("Age Group")) +
   xlab("") + ylab("")
 dev.off()
 
@@ -108,7 +108,7 @@ vis %>%
   geom_col(position=position_dodge(width = 0.9)) + 
   scale_fill_brewer(palette="Set1", direction=1) +
   ggtitle("Covid Deaths in 9 states by Age group, sex and state") +
-  guides(fill=guide_legend("State"), alpha=guide_legend("Age Group")) +
+  guides(fill=guide_legend("Sex"), alpha=guide_legend("Age Group")) +
   xlab("") + ylab("") 
 dev.off()
 
@@ -123,7 +123,7 @@ vis %>%
   geom_col(position=position_dodge(width = 0.9)) + 
   scale_fill_brewer(palette="Set1", direction=1) +
   ggtitle("Covid Deaths in 9 states by Age group and state") +
-  guides(fill=guide_legend("State"), alpha=guide_legend("Age Group")) +
+  guides(fill=guide_legend("Sex"), alpha=guide_legend("Age Group")) +
   xlab("") + ylab("") 
 dev.off()
 
@@ -139,7 +139,7 @@ vis %>%
   geom_col(position=position_dodge(width = 0.9)) + 
   scale_fill_brewer(palette="Set1", direction=1) +
   ggtitle("Covid Deaths in 9 states by Sex and state") +
-  guides(fill=guide_legend("State"), alpha=guide_legend("Age Group")) +
+  guides(fill=guide_legend("Sex"), alpha=guide_legend("Age Group")) +
   xlab("") + ylab("") 
 dev.off()
 
@@ -162,7 +162,7 @@ vis %>%
   geom_col() + 
   scale_fill_brewer(palette="Set1", direction=1) +
   ggtitle("Fraction of deaths due to covid") +
-  guides(fill=guide_legend("State"), alpha=guide_legend("Age Group")) +
+  guides(fill=guide_legend("Sex"), alpha=guide_legend("Age Group")) +
   xlab("") + ylab("") 
 dev.off()
 
@@ -176,7 +176,7 @@ vis %>%
   geom_point(size=3) + 
   scale_fill_brewer(palette="Set1", direction=1) +
   ggtitle("Fraction of deaths due to covid") +
-  guides(fill=guide_legend("State"), alpha=guide_legend("Age Group")) +
+  guides(fill=guide_legend("Sex"), alpha=guide_legend("Age Group")) +
   xlab("") + ylab("") 
 dev.off()
 
@@ -195,7 +195,7 @@ state_order <- unique(data$state)
 #   ggplot(aes(x=factor(state, levels=state_order), y = rate, fill=factor(sex, levels = c("Male", "Female")))) + 
 #   geom_col(position=position_dodge(width = 0.9)) +
 #   scale_fill_brewer(palette="Set1", direction=1, name = "Sex") +
-#   xlab("State") + ylab("Covid Death Rate") +
+#   xlab("Sex") + ylab("Covid Death Rate") +
 #   ggtitle("Covid death rate for a sample of states")
 
 
