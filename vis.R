@@ -609,6 +609,54 @@ legend_x <- diff(par()$usr)[1] * 0.02
 text(legend_x, legend_y, labels=c("Male", "Female"), col = legend_cols[2:1], adj=0, font=2)
 dev.off()
 
+
+# --- Step 9b, Add numbers
+n <- length(unique(data$state))
+light_gray <- grey(0.92)
+dark_gray <- grey(0.5)
+almost_black <- grey(0.3)
+grid_y <- seq(0, 0.00015, l=7)
+grid_lwd <- 1.7
+labels_y <- 1:n - 0.5
+labels_x <- seq(0, 0.00015, l=4)
+legend_cex = 1.5
+cols <- lighten(desaturate(brewer.pal(8, "Set1"), 0.5), 0.35)
+small_bar_space <- 0.02
+large_bar_space <- 0.15
+
+cex_main <- 1.9
+cex_sub <- 1.3
+
+
+legend_cols <- darken(desaturate(brewer.pal(8, "Set1"), 0.15), 0.05)
+legend_y <- c(
+  ((n - large_bar_space/2) + (n - 0.5 + small_bar_space/2))/2,
+  ((n - 1 + large_bar_space/2) + (n - 0.5 - small_bar_space/2))/2
+)
+
+
+png("fig/04_levers_09b.png", width=800, height=500)
+par(mar=c(2.1, 6.5, 7.1, 2.1))
+plot(NULL, ylim = c(-0.1, n + 0.1), yaxs="i", xlim = c(0, max(data$rate)*1.05), xaxs="i", ylab="", 
+     xlab="", axes=F, main = "")
+abline(v = grid_y, col = light_gray, lwd =grid_lwd)
+mtext(side=2, at = rev(labels_y),  unique(data$state), las=1, adj = 1, line=0.3, col=almost_black)
+mtext(formatC(labels_x*1e6, format="f", digits=5, drop0trailing = TRUE), side=3, at=labels_x, line = 0.1, adj= c(0, rep(0.5, l=length(labels_x) - 2), 1), col=dark_gray)
+legend_x <- diff(par()$usr)[1] * 0.02
+for (st in state_order){
+  i <- which(state_order == st)
+  m <- subset(data, (data$state == st)&(data$sex=="Male"))$rate[1]
+  f <- subset(data, (data$state == st)&(data$sex=="Female"))$rate[1]
+  rect(0, n+1- i - 1 + large_bar_space / 2, f, n+1-i - 0.5 - small_bar_space / 2, col=cols[1], border=NA)
+  text(f + legend_x/2, ((n+1- i - 1 + large_bar_space / 2) + ( n+1-i - 0.5 - small_bar_space / 2) )/2, adj=0, labels=floor(f*1e6), col=almost_black)
+  rect(0, n+1-i - 0.5 + small_bar_space / 2, m, n+1-i - large_bar_space / 2, col=cols[2], border=NA)
+  text(m + legend_x/2, ((n+1-i - 0.5 + small_bar_space / 2) + (n+1-i - large_bar_space / 2) )/2, adj=0, labels=floor(m*1e6), col=almost_black)
+}
+mtext(side=3, at = 0, adj = 0, "Covid death rate for sample states", cex=cex_main, line = 4, col = almost_black)
+mtext(side=3, at = 0, adj = 0, "Covid death rate as number of deaths per million inhabitants since the outbreak by sex", line = 2, cex=cex_sub, col = dark_gray)
+text(legend_x, legend_y, labels=c("Male", "Female"), col = legend_cols[2:1], adj=0, font=2)
+dev.off()
+
 # --- Step 10, Tell story
 n <- length(unique(data$state))
 light_gray <- grey(0.92)
