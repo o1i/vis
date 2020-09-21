@@ -73,6 +73,7 @@ ggplot(aes(x="",
   xlab("") + ylab("")
 dev.off()
 
+use_cols = brewer.pal(8, "Set1")[c(1, 3)]
 
 # --- Vis 2.0 Bars -------------------------------------------------------------
 order <- (vis %>% 
@@ -84,13 +85,13 @@ png("fig/02_bar_01.png", width=800, height=700)
 vis %>% 
   filter(state %in% used_states) %>% 
   group_by(state, age, sex) %>% 
-  mutate(covid=sum(covid)) %>% 
+  summarise(covid=sum(covid)) %>% 
   ggplot(aes(x=factor(state, levels=order), 
              y=covid, 
              alpha=factor(age, levels=c("young", "middle", "older")), 
              fill=factor(sex))) + 
   geom_col() + 
-  scale_fill_brewer(palette="Set1", direction=1) +
+  scale_fill_manual(values=use_cols) +
   ggtitle("Covid Deaths in 9 states by Age group, sex and state") +
   guides(fill=guide_legend("Sex"), alpha=guide_legend("Age Group")) +
   xlab("") + ylab("")
@@ -121,7 +122,7 @@ vis %>%
              y=covid, 
              alpha=factor(age, levels=c("young", "middle", "older")))) + 
   geom_col(position=position_dodge(width = 0.9)) + 
-  scale_fill_brewer(palette="Set1", direction=1) +
+  scale_fill_manual(values=use_cols) +
   ggtitle("Covid Deaths in 9 states by Age group and state") +
   guides(fill=guide_legend("Sex"), alpha=guide_legend("Age Group")) +
   xlab("") + ylab("") 
@@ -137,7 +138,7 @@ vis %>%
              y=covid, 
              fill=factor(sex))) + 
   geom_col(position=position_dodge(width = 0.9)) + 
-  scale_fill_brewer(palette="Set1", direction=1) +
+  scale_fill_manual(values=use_cols) +
   ggtitle("Covid Deaths in 9 states by Sex and state") +
   guides(fill=guide_legend("Sex"), alpha=guide_legend("Age Group")) +
   xlab("") + ylab("") 
@@ -160,7 +161,7 @@ vis %>%
   ggplot(aes(x=factor(state, levels=order), 
              y=fraction)) + 
   geom_col() + 
-  scale_fill_brewer(palette="Set1", direction=1) +
+  scale_fill_manual(values=use_cols) +
   ggtitle("Fraction of deaths due to covid") +
   guides(fill=guide_legend("Sex"), alpha=guide_legend("Age Group")) +
   xlab("") + ylab("") 
@@ -174,7 +175,7 @@ vis %>%
   ggplot(aes(x=factor(state, levels=order), 
              y=fraction)) + 
   geom_point(size=3) + 
-  scale_fill_brewer(palette="Set1", direction=1) +
+  scale_fill_manual(values=use_cols) +
   ggtitle("Fraction of deaths due to covid") +
   guides(fill=guide_legend("Sex"), alpha=guide_legend("Age Group")) +
   xlab("") + ylab("") 
@@ -198,7 +199,73 @@ state_order <- unique(data$state)
 #   xlab("Sex") + ylab("Covid Death Rate") +
 #   ggtitle("Covid death rate for a sample of states")
 
+# --- Step 0: very bad
 
+n <- length(unique(data$state))
+light_gray <- grey(0.92)
+grid_x <- 1:n - 0.5
+grid_y <- seq(0, 0.00015, l=13)
+grid_lwd <- 1.7
+labels_x <- 1:n - 0.5
+labels_y <- seq(0, 0.00015, l=13)
+legend_cex = 1.5
+cols <- brewer.pal(8, "Set1")[c(1, 3)]
+small_bar_space <- 0.00
+large_bar_space <- 0.1
+
+
+png("fig/04_levers_00.png", width=800, height=700)
+plot(NULL, xlim = c(-0.1, n + 0.1), xaxs="i", ylim = c(0, max(data$rate)), xlab="State", 
+     ylab="Covid Death Rate", axes=F, main = "Covid death rate for a sample of states")
+usr <- par()$usr
+rect(usr[1], usr[3], usr[2], usr[4], col=light_gray, border=NA)
+abline(v = grid_x, h = grid_y, col = "white", lwd =grid_lwd)
+text(labels_x + 0.25, -diff(labels_y)[1]/6, unique(data$state), srt=35, xpd=T, adj=1)
+mtext(formatC(labels_y, format="f", digits=5, drop0trailing = TRUE), side=2, at=labels_y, las=1, line=0.3)
+legend("right", legend=c("Male", "Female"), fill = cols[2:1], cex=legend_cex, border=NA, box.lwd = 0)
+for (st in state_order){
+  i <- which(state_order == st)
+  m <- subset(data, (data$state == st)&(data$sex=="Male"))$rate[1]
+  f <- subset(data, (data$state == st)&(data$sex=="Female"))$rate[1]
+  rect(i - 1 + large_bar_space / 2, 0, i - 0.5 - small_bar_space / 2, m, col=cols[2], border=NA)
+  rect(i - 0.5 + small_bar_space / 2, 0, i - large_bar_space / 2, f, col=cols[1], border=NA)
+}
+dev.off()
+
+# --- Step 0a: fewer gridlines
+
+n <- length(unique(data$state))
+light_gray <- grey(0.92)
+grid_x <- 1:n - 0.5
+grid_y <- seq(0, 0.00015, l=7)
+grid_lwd <- 1.7
+labels_x <- 1:n - 0.5
+labels_y <- seq(0, 0.00015, l=4)
+legend_cex = 1.5
+cols <- brewer.pal(8, "Set1")[c(1, 3)]
+small_bar_space <- 0.00
+large_bar_space <- 0.1
+
+
+png("fig/04_levers_00a.png", width=800, height=700)
+plot(NULL, xlim = c(-0.1, n + 0.1), xaxs="i", ylim = c(0, max(data$rate)), xlab="State", 
+     ylab="Covid Death Rate", axes=F, main = "Covid death rate for a sample of states")
+usr <- par()$usr
+rect(usr[1], usr[3], usr[2], usr[4], col=light_gray, border=NA)
+abline(v = grid_x, h = grid_y, col = "white", lwd =grid_lwd)
+text(labels_x + 0.25, -diff(labels_y)[1]/6, unique(data$state), srt=35, xpd=T, adj=1)
+mtext(formatC(labels_y, format="f", digits=5, drop0trailing = TRUE), side=2, at=labels_y, las=1, line=0.3)
+legend("right", legend=c("Male", "Female"), fill = cols[2:1], cex=legend_cex, border=NA, box.lwd = 0)
+for (st in state_order){
+  i <- which(state_order == st)
+  m <- subset(data, (data$state == st)&(data$sex=="Male"))$rate[1]
+  f <- subset(data, (data$state == st)&(data$sex=="Female"))$rate[1]
+  rect(i - 1 + large_bar_space / 2, 0, i - 0.5 - small_bar_space / 2, m, col=cols[2], border=NA)
+  rect(i - 0.5 + small_bar_space / 2, 0, i - large_bar_space / 2, f, col=cols[1], border=NA)
+}
+dev.off()
+
+# --- Step 1: colors
 
 n <- length(unique(data$state))
 light_gray <- grey(0.92)
@@ -434,7 +501,7 @@ labels_y <- 1:n - 0.5
 labels_x <- seq(0, 0.00015, l=4)
 legend_cex = 1.5
 cols <- brewer.pal(8, "Set1")
-small_bar_space <- 0.02
+small_bar_space <- 0.03
 large_bar_space <- 0.15
 
 cex_main <- 1.9
@@ -470,7 +537,7 @@ grid_lwd <- 1.7
 labels_y <- 1:n - 0.5
 labels_x <- seq(0, 0.00015, l=4)
 legend_cex = 1.5
-cols <- lighten(desaturate(brewer.pal(8, "Set1"), 0.3), 0.65)
+cols <- lighten(desaturate(brewer.pal(8, "Set1"), 0.5), 0.35)
 small_bar_space <- 0.02
 large_bar_space <- 0.15
 
@@ -507,7 +574,7 @@ grid_lwd <- 1.7
 labels_y <- 1:n - 0.5
 labels_x <- seq(0, 0.00015, l=4)
 legend_cex = 1.5
-cols <- lighten(desaturate(brewer.pal(8, "Set1"), 0.3), 0.65)
+cols <- lighten(desaturate(brewer.pal(8, "Set1"), 0.5), 0.35)
 small_bar_space <- 0.02
 large_bar_space <- 0.15
 
@@ -515,7 +582,7 @@ cex_main <- 1.9
 cex_sub <- 1.3
 
 
-legend_cols <- lighten(desaturate(brewer.pal(8, "Set1"), 0.15), 0.05)
+legend_cols <- darken(desaturate(brewer.pal(8, "Set1"), 0.15), 0.05)
 legend_y <- c(
   ((n - large_bar_space/2) + (n - 0.5 + small_bar_space/2))/2,
   ((n - 1 + large_bar_space/2) + (n - 0.5 - small_bar_space/2))/2
@@ -552,7 +619,7 @@ grid_lwd <- 1.7
 labels_y <- 1:n - 0.5
 labels_x <- seq(0, 0.00015, l=4)
 legend_cex = 1.5
-cols <- lighten(desaturate(brewer.pal(8, "Set1"), 0.3), 0.65)
+cols <- lighten(desaturate(brewer.pal(8, "Set1"), 0.6), 0.45)
 small_bar_space <- 0.02
 large_bar_space <- 0.15
 
@@ -560,7 +627,7 @@ cex_main <- 1.9
 cex_sub <- 1.3
 
 
-legend_cols <- lighten(desaturate(brewer.pal(8, "Set1"), 0.15), 0.05)
+legend_cols <- darken(desaturate(brewer.pal(8, "Set1"), 0.15), 0.05)
 legend_y <- c(
   ((n - large_bar_space/2) + (n - 0.5 + small_bar_space/2))/2,
   ((n - 1 + large_bar_space/2) + (n - 0.5 - small_bar_space/2))/2
@@ -572,7 +639,7 @@ sc_women_rect_pos <- c(
   (data %>% filter(state=="South Carolina", sex=="Female"))$rate[1],
   (n - 0.5 - small_bar_space/2)
 )
-sc_col <-  lighten(desaturate(brewer.pal(8, "Set1"), 0.05), 0.15)
+sc_col <-  lighten(desaturate(brewer.pal(8, "Set1"), 0.00), 0.02)
 
 
 png("fig/04_levers_10.png", width=800, height=500)
