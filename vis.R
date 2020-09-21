@@ -56,7 +56,7 @@ order <- (vis %>%
             group_by(state) %>%  
             summarise(covid=sum(covid)) %>% 
             arrange(covid))$state
-png("fig/01_pie.png", width=800, height=700)
+png("fig/01_pie.png", width=800, height=800)
 vis %>% 
   filter(state %in% used_states) %>% 
   group_by(state, age) %>% 
@@ -81,7 +81,7 @@ order <- (vis %>%
             group_by(state) %>%  
             summarise(covid=sum(covid)) %>% 
             arrange(desc(covid)))$state
-png("fig/02_bar_01.png", width=800, height=700)
+png("fig/02_bar_01.png", width=800, height=800)
 vis %>% 
   filter(state %in% used_states) %>% 
   group_by(state, age, sex) %>% 
@@ -97,7 +97,7 @@ vis %>%
   xlab("") + ylab("")
 dev.off()
 
-png("fig/02_bar_02.png", width=800, height=700)
+png("fig/02_bar_02.png", width=800, height=800)
 vis %>% 
   filter(state %in% used_states) %>% 
   group_by(state, age, sex) %>% 
@@ -107,13 +107,13 @@ vis %>%
              alpha=factor(age, levels=c("young", "middle", "older")), 
              fill=factor(sex))) + 
   geom_col(position=position_dodge(width = 0.9)) + 
-  scale_fill_brewer(palette="Set1", direction=1) +
+  scale_fill_manual(values=use_cols) +
   ggtitle("Covid Deaths in 9 states by Age group, sex and state") +
   guides(fill=guide_legend("Sex"), alpha=guide_legend("Age Group")) +
   xlab("") + ylab("") 
 dev.off()
 
-png("fig/02_bar_03.png", width=800, height=700)
+png("fig/02_bar_03.png", width=800, height=800)
 vis %>% 
   filter(state %in% used_states) %>% 
   group_by(state, age) %>% 
@@ -128,7 +128,7 @@ vis %>%
   xlab("") + ylab("") 
 dev.off()
 
-png("fig/02_bar_04.png", width=800, height=700)
+png("fig/02_bar_04.png", width=800, height=800)
 vis %>% 
   filter(state %in% used_states) %>% 
   group_by(state, sex) %>% 
@@ -153,7 +153,7 @@ order <- (vis %>%
             group_by(state) %>%  
             summarise(frac=sum(covid)/sum(tot_deaths)) %>% 
             arrange(desc(frac)))$state
-png("fig/03_point_01.png", width=800, height=700)
+png("fig/03_point_01.png", width=800, height=800)
 vis %>% 
   filter(state %in% used_states) %>% 
   group_by(state) %>% 
@@ -167,7 +167,7 @@ vis %>%
   xlab("") + ylab("") 
 dev.off()
 
-png("fig/03_point_02.png", width=800, height=700)
+png("fig/03_point_02.png", width=800, height=800)
 vis %>% 
   filter(state %in% used_states) %>% 
   group_by(state) %>% 
@@ -195,7 +195,7 @@ state_order <- unique(data$state)
 # data %>% 
 #   ggplot(aes(x=factor(state, levels=state_order), y = rate, fill=factor(sex, levels = c("Male", "Female")))) + 
 #   geom_col(position=position_dodge(width = 0.9)) +
-#   scale_fill_brewer(palette="Set1", direction=1, name = "Sex") +
+# scale_fill_manual(values=use_cols) +
 #   xlab("Sex") + ylab("Covid Death Rate") +
 #   ggtitle("Covid death rate for a sample of states")
 
@@ -214,13 +214,13 @@ small_bar_space <- 0.00
 large_bar_space <- 0.1
 
 
-png("fig/04_levers_00.png", width=800, height=700)
+png("fig/04_levers_00.png", width=800, height=800)
 plot(NULL, xlim = c(-0.1, n + 0.1), xaxs="i", ylim = c(0, max(data$rate)), xlab="State", 
      ylab="Covid Death Rate", axes=F, main = "Covid death rate for a sample of states")
 usr <- par()$usr
 rect(usr[1], usr[3], usr[2], usr[4], col=light_gray, border=NA)
 abline(v = grid_x, h = grid_y, col = "white", lwd =grid_lwd)
-text(labels_x + 0.25, -diff(labels_y)[1]/6, unique(data$state), srt=35, xpd=T, adj=1)
+text(labels_x + 0.25, -diff(labels_y)[1]/6*4, unique(data$state), srt=35, xpd=T, adj=1)
 mtext(formatC(labels_y, format="f", digits=5, drop0trailing = TRUE), side=2, at=labels_y, las=1, line=0.3)
 legend("right", legend=c("Male", "Female"), fill = cols[2:1], cex=legend_cex, border=NA, box.lwd = 0)
 for (st in state_order){
@@ -237,23 +237,23 @@ dev.off()
 n <- length(unique(data$state))
 light_gray <- grey(0.92)
 grid_x <- 1:n - 0.5
-grid_y <- seq(0, 0.00015, l=7)
+grid_y <- seq(0, 0.00015, l=13)
 grid_lwd <- 1.7
 labels_x <- 1:n - 0.5
-labels_y <- seq(0, 0.00015, l=4)
+labels_y <- seq(0, 0.00015, l=13)
 legend_cex = 1.5
-cols <- brewer.pal(8, "Set1")[c(1, 3)]
+cols <- brewer.pal(8, "Set1")
 small_bar_space <- 0.00
 large_bar_space <- 0.1
 
 
-png("fig/04_levers_00a.png", width=800, height=700)
+png("fig/04_levers_00a.png", width=800, height=800)
 plot(NULL, xlim = c(-0.1, n + 0.1), xaxs="i", ylim = c(0, max(data$rate)), xlab="State", 
      ylab="Covid Death Rate", axes=F, main = "Covid death rate for a sample of states")
 usr <- par()$usr
 rect(usr[1], usr[3], usr[2], usr[4], col=light_gray, border=NA)
 abline(v = grid_x, h = grid_y, col = "white", lwd =grid_lwd)
-text(labels_x + 0.25, -diff(labels_y)[1]/6, unique(data$state), srt=35, xpd=T, adj=1)
+text(labels_x + 0.25, -diff(labels_y)[1]/6*4, unique(data$state), srt=35, xpd=T, adj=1)
 mtext(formatC(labels_y, format="f", digits=5, drop0trailing = TRUE), side=2, at=labels_y, las=1, line=0.3)
 legend("right", legend=c("Male", "Female"), fill = cols[2:1], cex=legend_cex, border=NA, box.lwd = 0)
 for (st in state_order){
@@ -280,7 +280,7 @@ small_bar_space <- 0.00
 large_bar_space <- 0.1
 
 
-png("fig/04_levers_01.png", width=800, height=700)
+png("fig/04_levers_01.png", width=800, height=800)
 plot(NULL, xlim = c(-0.1, n + 0.1), xaxs="i", ylim = c(0, max(data$rate)), xlab="State", 
      ylab="Covid Death Rate", axes=F, main = "Covid death rate for a sample of states")
 usr <- par()$usr
@@ -311,7 +311,7 @@ small_bar_space <- 0.00
 large_bar_space <- 0.1
 
 
-png("fig/04_levers_02.png", width=800, height=700)
+png("fig/04_levers_02.png", width=800, height=800)
 plot(NULL, xlim = c(-0.1, n + 0.1), xaxs="i", ylim = c(0, max(data$rate)), xlab="State", 
      ylab="Covid Death Rate", axes=F, main = "Covid death rate for a sample of states")
 abline(h = grid_y, col = light_gray, lwd =grid_lwd)
@@ -340,7 +340,7 @@ small_bar_space <- 0.00
 large_bar_space <- 0.1
 
 
-png("fig/04_levers_03.png", width=800, height=500)
+png("fig/04_levers_03.png", width=800, height=800)
 par(mar=c(4.1, 6.5, 4.1, 2.1))
 plot(NULL, ylim = c(-0.1, n + 0.1), yaxs="i", xlim = c(0, max(data$rate)*1.05), xaxs="i", ylab="", 
      xlab="Covid Death Rate", axes=F, main = "Covid death rate for a sample of states")
@@ -371,7 +371,7 @@ small_bar_space <- 0.00
 large_bar_space <- 0.1
 
 
-png("fig/04_levers_04.png", width=800, height=500)
+png("fig/04_levers_04.png", width=800, height=800)
 par(mar=c(4.1, 6.5, 4.1, 2.1))
 plot(NULL, ylim = c(-0.1, n + 0.1), yaxs="i", xlim = c(0, max(data$rate)*1.05), xaxs="i", ylab="", 
      xlab="", axes=F, main = "")
@@ -403,7 +403,7 @@ small_bar_space <- 0.00
 large_bar_space <- 0.1
 
 
-png("fig/04_levers_05.png", width=800, height=500)
+png("fig/04_levers_05.png", width=800, height=800)
 par(mar=c(2.1, 6.5, 7.1, 2.1))
 plot(NULL, ylim = c(-0.1, n + 0.1), yaxs="i", xlim = c(0, max(data$rate)*1.05), xaxs="i", ylab="", 
      xlab="", axes=F, main = "")
@@ -438,7 +438,7 @@ cex_main <- 1.9
 cex_sub <- 1.3
 
 
-png("fig/04_levers_06.png", width=800, height=500)
+png("fig/04_levers_06.png", width=800, height=800)
 par(mar=c(2.1, 6.5, 7.1, 2.1))
 plot(NULL, ylim = c(-0.1, n + 0.1), yaxs="i", xlim = c(0, max(data$rate)*1.05), xaxs="i", ylab="", 
      xlab="", axes=F, main = "")
@@ -454,7 +454,7 @@ for (st in state_order){
   rect(0, n+1-i - 0.5 + small_bar_space / 2, m, n+1-i - large_bar_space / 2, col=cols[2], border=NA)
 }
 mtext(side=3, at = 0, adj = 0, "Covid death rate for sample states", cex=cex_main, line = 4)
-mtext(side=3, at = 0, adj = 0, "Covid death rate as fraction of the population that has died from covid since the outbreak", line = 2, cex=cex_sub)
+mtext(side=3, at = 0, adj = 0, "Covid death rate as number of deaths since the outbreak per million inhabitants by sex", line = 2, cex=cex_sub)
 dev.off()
 
 # --- Step 7, Readable units
@@ -473,7 +473,7 @@ cex_main <- 1.9
 cex_sub <- 1.3
 
 
-png("fig/04_levers_07.png", width=800, height=500)
+png("fig/04_levers_07.png", width=800, height=800)
 par(mar=c(2.1, 6.5, 7.1, 2.1))
 plot(NULL, ylim = c(-0.1, n + 0.1), yaxs="i", xlim = c(0, max(data$rate)*1.05), xaxs="i", ylab="", 
      xlab="", axes=F, main = "")
@@ -489,7 +489,7 @@ for (st in state_order){
   rect(0, n+1-i - 0.5 + small_bar_space / 2, m, n+1-i - large_bar_space / 2, col=cols[2], border=NA)
 }
 mtext(side=3, at = 0, adj = 0, "Covid death rate for sample states", cex=cex_main, line = 4)
-mtext(side=3, at = 0, adj = 0, "Covid death rate as number of deaths per million inhabitants since the outbreak", line = 2, cex=cex_sub)
+mtext(side=3, at = 0, adj = 0, "Covid death rate as number of deaths since the outbreak per million inhabitants by sex", line = 2, cex=cex_sub)
 dev.off()
 
 # --- Step 8, Split bars
@@ -508,7 +508,7 @@ cex_main <- 1.9
 cex_sub <- 1.3
 
 
-png("fig/04_levers_08.png", width=800, height=500)
+png("fig/04_levers_08.png", width=800, height=800)
 par(mar=c(2.1, 6.5, 7.1, 2.1))
 plot(NULL, ylim = c(-0.1, n + 0.1), yaxs="i", xlim = c(0, max(data$rate)*1.05), xaxs="i", ylab="", 
      xlab="", axes=F, main = "")
@@ -524,72 +524,76 @@ for (st in state_order){
   rect(0, n+1-i - 0.5 + small_bar_space / 2, m, n+1-i - large_bar_space / 2, col=cols[2], border=NA)
 }
 mtext(side=3, at = 0, adj = 0, "Covid death rate for sample states", cex=cex_main, line = 4)
-mtext(side=3, at = 0, adj = 0, "Covid death rate as number of deaths per million inhabitants since the outbreak", line = 2, cex=cex_sub)
+mtext(side=3, at = 0, adj = 0, "Covid death rate as number of deaths since the outbreak per million inhabitants by sex", line = 2, cex=cex_sub)
 dev.off()
 
-# --- Step 9, mute colors
+# --- Step 8b, Integrate legend
 n <- length(unique(data$state))
 light_gray <- grey(0.92)
-dark_gray <- grey(0.5)
-almost_black <- grey(0.3)
 grid_y <- seq(0, 0.00015, l=7)
 grid_lwd <- 1.7
 labels_y <- 1:n - 0.5
 labels_x <- seq(0, 0.00015, l=4)
 legend_cex = 1.5
-cols <- lighten(desaturate(brewer.pal(8, "Set1"), 0.5), 0.35)
-small_bar_space <- 0.02
+cols <- brewer.pal(8, "Set1")
+small_bar_space <- 0.03
 large_bar_space <- 0.15
 
 cex_main <- 1.9
 cex_sub <- 1.3
 
-
-png("fig/04_levers_09.png", width=800, height=500)
-par(mar=c(2.1, 6.5, 7.1, 2.1))
-plot(NULL, ylim = c(-0.1, n + 0.1), yaxs="i", xlim = c(0, max(data$rate)*1.05), xaxs="i", ylab="", 
-     xlab="", axes=F, main = "")
-abline(v = grid_y, col = light_gray, lwd =grid_lwd)
-mtext(side=2, at = rev(labels_y),  unique(data$state), las=1, adj = 1, line=0.3, col=almost_black)
-mtext(formatC(labels_x*1e6, format="f", digits=5, drop0trailing = TRUE), side=3, at=labels_x, line = 0.1, adj= c(0, rep(0.5, l=length(labels_x) - 2), 1), col=dark_gray)
-legend("bottomright", legend=c("Male", "Female"), fill = cols[2:1], cex=legend_cex, border=NA, box.lwd = 0, text.col = dark_gray)
-for (st in state_order){
-  i <- which(state_order == st)
-  m <- subset(data, (data$state == st)&(data$sex=="Male"))$rate[1]
-  f <- subset(data, (data$state == st)&(data$sex=="Female"))$rate[1]
-  rect(0, n+1- i - 1 + large_bar_space / 2, f, n+1-i - 0.5 - small_bar_space / 2, col=cols[1], border=NA)
-  rect(0, n+1-i - 0.5 + small_bar_space / 2, m, n+1-i - large_bar_space / 2, col=cols[2], border=NA)
-}
-mtext(side=3, at = 0, adj = 0, "Covid death rate for sample states", cex=cex_main, line = 4, col = almost_black)
-mtext(side=3, at = 0, adj = 0, "Covid death rate as number of deaths per million inhabitants since the outbreak by sex", line = 2, cex=cex_sub, col = dark_gray)
-dev.off()
-
-# --- Step 9, Integrate legend
-n <- length(unique(data$state))
-light_gray <- grey(0.92)
-dark_gray <- grey(0.5)
-almost_black <- grey(0.3)
-grid_y <- seq(0, 0.00015, l=7)
-grid_lwd <- 1.7
-labels_y <- 1:n - 0.5
-labels_x <- seq(0, 0.00015, l=4)
-legend_cex = 1.5
-cols <- lighten(desaturate(brewer.pal(8, "Set1"), 0.5), 0.35)
-small_bar_space <- 0.02
-large_bar_space <- 0.15
-
-cex_main <- 1.9
-cex_sub <- 1.3
-
-
-legend_cols <- darken(desaturate(brewer.pal(8, "Set1"), 0.15), 0.05)
+legend_cols <- darken(desaturate(brewer.pal(8, "Set1"), 0.15), 0.55)
 legend_y <- c(
   ((n - large_bar_space/2) + (n - 0.5 + small_bar_space/2))/2,
   ((n - 1 + large_bar_space/2) + (n - 0.5 - small_bar_space/2))/2
 )
 
 
-png("fig/04_levers_09.png", width=800, height=500)
+png("fig/04_levers_08b.png", width=800, height=800)
+par(mar=c(2.1, 6.5, 7.1, 2.1))
+plot(NULL, ylim = c(-0.1, n + 0.1), yaxs="i", xlim = c(0, max(data$rate)*1.05), xaxs="i", ylab="", 
+     xlab="", axes=F, main = "")
+abline(v = grid_y, col = light_gray, lwd =grid_lwd)
+mtext(side=2, at = rev(labels_y),  unique(data$state), las=1, adj = 1, line=0.3)
+mtext(formatC(labels_x*1e6, format="f", digits=5, drop0trailing = TRUE), side=3, at=labels_x, line = 0.1, adj= c(0, rep(0.5, l=length(labels_x) - 2), 1))
+for (st in state_order){
+  i <- which(state_order == st)
+  m <- subset(data, (data$state == st)&(data$sex=="Male"))$rate[1]
+  f <- subset(data, (data$state == st)&(data$sex=="Female"))$rate[1]
+  rect(0, n+1- i - 1 + large_bar_space / 2, f, n+1-i - 0.5 - small_bar_space / 2, col=cols[1], border=NA)
+  rect(0, n+1-i - 0.5 + small_bar_space / 2, m, n+1-i - large_bar_space / 2, col=cols[2], border=NA)
+}
+mtext(side=3, at = 0, adj = 0, "Covid death rate for sample states", cex=cex_main, line = 4)
+mtext(side=3, at = 0, adj = 0, "Covid death rate as number of deaths since the outbreak per million inhabitants by sex", line = 2, cex=cex_sub)
+text(legend_x, legend_y, labels=c("Male", "Female"), col = legend_cols[2:1], adj=0, font=2)
+dev.off()
+
+# --- Step 9, Mute colors
+n <- length(unique(data$state))
+light_gray <- grey(0.92)
+dark_gray <- grey(0.5)
+almost_black <- grey(0.3)
+grid_y <- seq(0, 0.00015, l=7)
+grid_lwd <- 1.7
+labels_y <- 1:n - 0.5
+labels_x <- seq(0, 0.00015, l=4)
+legend_cex = 1.5
+cols <- darken(rev(c(rgb(173, 209, 191, m=256), rgb(213, 197, 229, m=256))), 0.225)
+small_bar_space <- 0.02
+large_bar_space <- 0.15
+
+cex_main <- 1.9
+cex_sub <- 1.3
+
+
+legend_cols <- darken(desaturate(cols, 0.3),0.5)
+legend_y <- c(
+  ((n - large_bar_space/2) + (n - 0.5 + small_bar_space/2))/2,
+  ((n - 1 + large_bar_space/2) + (n - 0.5 - small_bar_space/2))/2
+)
+
+
+png("fig/04_levers_09.png", width=800, height=800)
 par(mar=c(2.1, 6.5, 7.1, 2.1))
 plot(NULL, ylim = c(-0.1, n + 0.1), yaxs="i", xlim = c(0, max(data$rate)*1.05), xaxs="i", ylab="", 
      xlab="", axes=F, main = "")
@@ -604,7 +608,7 @@ for (st in state_order){
   rect(0, n+1-i - 0.5 + small_bar_space / 2, m, n+1-i - large_bar_space / 2, col=cols[2], border=NA)
 }
 mtext(side=3, at = 0, adj = 0, "Covid death rate for sample states", cex=cex_main, line = 4, col = almost_black)
-mtext(side=3, at = 0, adj = 0, "Covid death rate as number of deaths per million inhabitants since the outbreak by sex", line = 2, cex=cex_sub, col = dark_gray)
+mtext(side=3, at = 0, adj = 0, "Covid death rate as number of deaths since the outbreak per million inhabitants by sex", line = 2, cex=cex_sub, col = dark_gray)
 legend_x <- diff(par()$usr)[1] * 0.02
 text(legend_x, legend_y, labels=c("Male", "Female"), col = legend_cols[2:1], adj=0, font=2)
 dev.off()
@@ -620,7 +624,7 @@ grid_lwd <- 1.7
 labels_y <- 1:n - 0.5
 labels_x <- seq(0, 0.00015, l=4)
 legend_cex = 1.5
-cols <- lighten(desaturate(brewer.pal(8, "Set1"), 0.5), 0.35)
+cols <- darken(rev(c(rgb(173, 209, 191, m=256), rgb(213, 197, 229, m=256))), 0.225)
 small_bar_space <- 0.02
 large_bar_space <- 0.15
 
@@ -628,14 +632,14 @@ cex_main <- 1.9
 cex_sub <- 1.3
 
 
-legend_cols <- darken(desaturate(brewer.pal(8, "Set1"), 0.15), 0.05)
+legend_cols <- darken(desaturate(cols, 0.3),0.5)
 legend_y <- c(
   ((n - large_bar_space/2) + (n - 0.5 + small_bar_space/2))/2,
   ((n - 1 + large_bar_space/2) + (n - 0.5 - small_bar_space/2))/2
 )
 
 
-png("fig/04_levers_09b.png", width=800, height=500)
+png("fig/04_levers_09b.png", width=800, height=800)
 par(mar=c(2.1, 6.5, 7.1, 2.1))
 plot(NULL, ylim = c(-0.1, n + 0.1), yaxs="i", xlim = c(0, max(data$rate)*1.05), xaxs="i", ylab="", 
      xlab="", axes=F, main = "")
@@ -653,7 +657,7 @@ for (st in state_order){
   text(m + legend_x/2, ((n+1-i - 0.5 + small_bar_space / 2) + (n+1-i - large_bar_space / 2) )/2, adj=0, labels=floor(m*1e6), col=almost_black)
 }
 mtext(side=3, at = 0, adj = 0, "Covid death rate for sample states", cex=cex_main, line = 4, col = almost_black)
-mtext(side=3, at = 0, adj = 0, "Covid death rate as number of deaths per million inhabitants since the outbreak by sex", line = 2, cex=cex_sub, col = dark_gray)
+mtext(side=3, at = 0, adj = 0, "Covid death rate as number of deaths since the outbreak per million inhabitants by sex", line = 2, cex=cex_sub, col = dark_gray)
 text(legend_x, legend_y, labels=c("Male", "Female"), col = legend_cols[2:1], adj=0, font=2)
 dev.off()
 
@@ -667,7 +671,8 @@ grid_lwd <- 1.7
 labels_y <- 1:n - 0.5
 labels_x <- seq(0, 0.00015, l=4)
 legend_cex = 1.5
-cols <- lighten(desaturate(brewer.pal(8, "Set1"), 0.6), 0.45)
+pre_cols <- darken(rev(c(rgb(173, 209, 191, m=256), rgb(213, 197, 229, m=256))), 0.225)
+cols <- lighten(desaturate(pre_cols, 0.1), c(0.35, 0.45))
 small_bar_space <- 0.02
 large_bar_space <- 0.15
 
@@ -675,7 +680,7 @@ cex_main <- 1.9
 cex_sub <- 1.3
 
 
-legend_cols <- darken(desaturate(brewer.pal(8, "Set1"), 0.15), 0.05)
+legend_cols <- darken(desaturate(pre_cols, 0.3),0.3)
 legend_y <- c(
   ((n - large_bar_space/2) + (n - 0.5 + small_bar_space/2))/2,
   ((n - 1 + large_bar_space/2) + (n - 0.5 - small_bar_space/2))/2
@@ -687,10 +692,10 @@ sc_women_rect_pos <- c(
   (data %>% filter(state=="South Carolina", sex=="Female"))$rate[1],
   (n - 0.5 - small_bar_space/2)
 )
-sc_col <-  lighten(desaturate(brewer.pal(8, "Set1"), 0.00), 0.02)
+sc_col <-  darken(pre_cols[1], 0.35)
 
 
-png("fig/04_levers_10.png", width=800, height=500)
+png("fig/04_levers_10.png", width=800, height=800)
 par(mar=c(2.1, 6.5, 7.1, 2.1))
 plot(NULL, ylim = c(-0.1, n + 0.1), yaxs="i", xlim = c(0, max(data$rate)*1.05), xaxs="i", ylab="", 
      xlab="", axes=F, main = "")
@@ -705,7 +710,7 @@ for (st in state_order){
   rect(0, n+1-i - 0.5 + small_bar_space / 2, m, n+1-i - large_bar_space / 2, col=cols[2], border=NA)
 }
 mtext(side=3, at = 0, adj = 0, "Large surplus death rate in South Carolina amongst women", cex=cex_main, line = 4, col = almost_black)
-mtext(side=3, at = 0, adj = 0, "Covid death rate as number of deaths per million inhabitants since the outbreak by sex", line = 2, cex=cex_sub, col = dark_gray)
+mtext(side=3, at = 0, adj = 0, "Covid death rate as number of deaths since the outbreak per million inhabitants by sex", line = 2, cex=cex_sub, col = dark_gray)
 legend_x <- diff(par()$usr)[1] * 0.02
 text(legend_x, legend_y, labels=c("Male", "Female"), col = legend_cols[2:1], adj=0, font=2)
 rect(sc_women_rect_pos[1], sc_women_rect_pos[2], sc_women_rect_pos[3], sc_women_rect_pos[4],
